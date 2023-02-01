@@ -1,3 +1,5 @@
+use imageproc::distance_transform::Norm;
+
 #[derive(Copy, Clone)]
 pub struct Position {
     pub(crate) x: i32,
@@ -22,10 +24,24 @@ pub fn diff(vector: Vector) -> NormalizedVector {
     }
 }
 
-pub fn scale(vector: NormalizedVector, scale: f64) -> NormalizedVector {
+pub fn scale_normalized_vector(vector: NormalizedVector, scale: f64) -> NormalizedVector {
     NormalizedVector {
         x: (scale * (vector.x as f64)) as i32,
         y: (scale * (vector.y as f64)) as i32,
+    }
+}
+
+pub fn scale_position_x(position: Position, scale: f64) -> Position {
+    Position {
+        x: (scale * (position.x as f64)) as i32,
+        y: position.y,
+    }
+}
+
+pub fn scale_position_y(position: Position, scale: f64) -> Position {
+    Position {
+        x: position.x,
+        y: (scale * (position.y as f64)) as i32,
     }
 }
 
@@ -43,22 +59,22 @@ pub fn join(vector1: NormalizedVector, vector2: NormalizedVector) -> NormalizedV
     }
 }
 
-mod tests{
-    use crate::math2d::{NormalizedVector, scale};
+mod tests {
+    use crate::math2d::{NormalizedVector, scale_normalized_vector};
 
     #[test]
-    fn scale_positive_test(){
-        let nv=NormalizedVector{ x: 100, y: 100 };
-        let snv=scale(nv,0.5);
-        assert_eq!(50,snv.x);
-        assert_eq!(50,snv.y);
+    fn scale_positive_test() {
+        let nv = NormalizedVector { x: 100, y: 100 };
+        let snv = scale_normalized_vector(nv, 0.5);
+        assert_eq!(50, snv.x);
+        assert_eq!(50, snv.y);
     }
 
     #[test]
-    fn scale_negative_test(){
-        let nv=NormalizedVector{ x: -100, y: -100 };
-        let snv=scale(nv,0.5);
-        assert_eq!(-50,snv.x);
-        assert_eq!(-50,snv.y);
+    fn scale_negative_test() {
+        let nv = NormalizedVector { x: -100, y: -100 };
+        let snv = scale_normalized_vector(nv, 0.5);
+        assert_eq!(-50, snv.x);
+        assert_eq!(-50, snv.y);
     }
 }

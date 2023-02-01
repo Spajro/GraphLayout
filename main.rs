@@ -2,6 +2,7 @@ mod force_driven_layout;
 mod graph;
 mod math2d;
 mod input_csv;
+mod display;
 
 extern crate core;
 

@@ -52,19 +52,19 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     //let cnst: f64 = 0.5 / (state.graph.edges.len() as f64);
     let cnst: f64 = 0.125;
     println!("EDGE V({})->V({}) => {},{}", edge.first.id, edge.second.id,
-             scale(diff(Vector { first: first_position, second: second_position }), cnst).x,
-             scale(diff(Vector { first: first_position, second: second_position }), cnst).y);
+             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).x,
+             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).y);
     println!("EDGE V({})->V({}) => {},{}", edge.second.id, edge.first.id,
-             scale(diff(Vector { first: second_position, second: first_position }), cnst).x,
-             scale(diff(Vector { first: second_position, second: first_position }), cnst).y);
+             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).x,
+             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).y);
     return ForcePair {
         first_force: Force {
             vertex: edge.first.clone(),
-            position_diff: scale(diff(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst),
         },
         second_force: Force {
             vertex: edge.second.clone(),
-            position_diff: scale(diff(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst),
         },
     };
 }
@@ -77,20 +77,20 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
 
     println!("VERT {},{} <-> {},{}", first_position.x, first_position.y, second_position.x, second_position.y);
     println!("VERT V({})->V({}) => {},{}", first.id, second.id,
-             scale(diff(Vector { first: second_position, second: first_position }), cnst).x,
-             scale(diff(Vector { first: second_position, second: first_position }), cnst).y);
+             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).x,
+             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).y);
     println!("VERT V({})->V({}) => {},{}", second.id, first.id,
-             scale(diff(Vector { first: first_position, second: second_position }), cnst).x,
-             scale(diff(Vector { first: first_position, second: second_position }), cnst).y);
+             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).x,
+             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).y);
 
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),
-            position_diff: scale(diff(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst),
         },
         second_force: Force {
             vertex: second.clone(),
-            position_diff: scale(diff(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst),
         },
     };
 }
