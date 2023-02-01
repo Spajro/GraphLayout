@@ -1,9 +1,10 @@
-#[derive(Eq, Hash, PartialEq, Copy, Clone)]
+#[derive(Eq, Hash, PartialEq, Clone)]
 pub struct Vertex {
     pub(crate) id: u32,
+    pub(crate) label:String,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct Edge {
     pub(crate) first: Vertex,
     pub(crate) second: Vertex,

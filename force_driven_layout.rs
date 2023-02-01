@@ -8,13 +8,13 @@ pub struct State {
     pub(crate) positions: HashMap<Vertex, Position>,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 struct Force {
     vertex: Vertex,
     position_diff: NormalizedVector,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 struct ForcePair {
     first_force: Force,
     second_force: Force,
@@ -31,18 +31,18 @@ pub fn iterate(state: &mut State) {
             .for_each(|v2| force_pairs.push_back(vertexes_pair_to_force_pair(v1, v2, state))));
     force_pairs.iter()
         .for_each(|force_pair| {
-            forces.push_back(force_pair.first_force);
-            forces.push_back(force_pair.second_force);
+            forces.push_back(force_pair.first_force.clone());
+            forces.push_back(force_pair.second_force.clone());
         });
     state.graph.vertexes.iter()
-        .for_each(|vertex| { joined.insert(*vertex, NormalizedVector { x: 0, y: 0 }); });
+        .for_each(|vertex| { joined.insert(vertex.clone(), NormalizedVector { x: 0, y: 0 }); });
     forces.iter()
         .for_each(|force| {
-            joined.insert(force.vertex,
+            joined.insert(force.vertex.clone(),
                           join(*joined.get(&force.vertex).unwrap(), force.position_diff));
         });
     joined.iter().for_each(|pair| println!("V{} -> {},{}", pair.0.id, pair.1.x, pair.1.y));
-    joined.iter().map(|pair| Force { vertex: *pair.0, position_diff: *pair.1 })
+    joined.iter().map(|pair| Force { vertex: pair.0.clone(), position_diff: *pair.1 })
         .for_each(|force| apply_force_to_state(force, state));
 }
 
@@ -59,11 +59,11 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
              scale(diff(Vector { first: second_position, second: first_position }), cnst).y);
     return ForcePair {
         first_force: Force {
-            vertex: edge.first,
+            vertex: edge.first.clone(),
             position_diff: scale(diff(Vector { first: first_position, second: second_position }), cnst),
         },
         second_force: Force {
-            vertex: edge.second,
+            vertex: edge.second.clone(),
             position_diff: scale(diff(Vector { first: second_position, second: first_position }), cnst),
         },
     };
@@ -97,7 +97,7 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
 
 
 fn apply_force_to_state(force: Force, state: &mut State) {
-    state.positions.insert(force.vertex,
+    state.positions.insert(force.vertex.clone(),
                            add(*state.positions.get(&force.vertex).unwrap(),
                                force.position_diff));
 }
