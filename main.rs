@@ -18,7 +18,7 @@ fn main() {
 
 fn test_with_input() {
     let state = &mut State {
-        graph: input("test_input.csv".to_string()).unwrap(),
+        graph: input("examples/square.csv".to_string()).unwrap(),
 
         positions: Default::default(),
     };
