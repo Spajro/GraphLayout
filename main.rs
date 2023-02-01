@@ -6,6 +6,7 @@ mod display;
 
 extern crate core;
 
+use crate::display::draw;
 use crate::graph::*;
 use crate::force_driven_layout::State;
 use crate::math2d::Position;
@@ -26,10 +27,11 @@ fn test_with_input() {
     state.positions.insert(Vertex { id: 2, label: "beta".to_string() }, Position { x: 100, y: 300 });
     state.positions.insert(Vertex { id: 3, label: "gamma".to_string() }, Position { x: 300, y: 300 });
     state.positions.insert(Vertex { id: 4, label: "epsilon".to_string() }, Position { x: 300, y: 100 });
-    for _i in 0..5 {
+    for _i in 0..10 {
         display(state);
         iterate(state);
     }
+    draw(state);
 }
 
 fn test() {

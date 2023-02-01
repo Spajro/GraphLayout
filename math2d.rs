@@ -1,4 +1,3 @@
-use imageproc::distance_transform::Norm;
 
 #[derive(Copy, Clone)]
 pub struct Position {
