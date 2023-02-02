@@ -6,6 +6,7 @@ mod display;
 
 extern crate core;
 
+use rand::random;
 use crate::display::draw;
 use crate::graph::*;
 use crate::force_driven_layout::State;
@@ -19,19 +20,24 @@ fn main() {
 
 fn test_with_input() {
     let state = &mut State {
-        graph: input("examples/square.csv".to_string()).unwrap(),
+        graph: input("examples/tree.csv".to_string()).unwrap(),
 
         positions: Default::default(),
     };
-    state.positions.insert(Vertex { id: 1, label: "alpha".to_string() }, Position { x: 100, y: 100 });
-    state.positions.insert(Vertex { id: 2, label: "beta".to_string() }, Position { x: 100, y: 300 });
-    state.positions.insert(Vertex { id: 3, label: "gamma".to_string() }, Position { x: 300, y: 300 });
-    state.positions.insert(Vertex { id: 4, label: "epsilon".to_string() }, Position { x: 300, y: 100 });
+    state.graph.vertexes.iter()
+        .for_each(|vertex|{state.positions.insert(vertex.clone(),random_position());});
     for _i in 0..20 {
-        display(state);
+        //display(state);
         iterate(state);
     }
     draw(state);
+}
+
+fn random_position() -> Position{
+    Position{
+        x: 100+(random::<i32>()%1000),
+        y: 100+(random::<i32>()%1000)
+    }
 }
 
 fn test() {
@@ -67,7 +73,7 @@ fn test() {
     state.positions.insert(Vertex { id: 4, label: "epsilon".to_string() }, Position { x: 300, y: 100 });
     println!("WORK");
     for _i in 0..5 {
-        display(state);
+        //display(state);
         iterate(state);
     }
 }

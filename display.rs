@@ -19,16 +19,18 @@ pub fn draw(state: &mut State) {
         panic!();
     });
     state.graph.vertexes.iter().for_each(|vertex| {
-        println!("DRAW AT {},{}",
+        println!("DRAW {} AT {},{}",
+                 vertex.label,
                  state.positions.get(&vertex).unwrap().x,
                  state.positions.get(&vertex).unwrap().y);
         image = draw_text::<RgbaImage>(&image,
                                        Rgba([206, 127, 223, 16]),
-                                       state.positions.get(&vertex).unwrap().x/2,
-                                       state.positions.get(&vertex).unwrap().y/2,
+                                       state.positions.get(&vertex).unwrap().x,
+                                       state.positions.get(&vertex).unwrap().y,
                                        Scale { x: 30.0, y: 30.0 },
                                        font,
-                                       vertex.label.as_str());});
+                                       vertex.label.as_str());
+    });
     let _ = image.save("result.jpg");
 }
 
@@ -50,8 +52,8 @@ fn adjust_to_non_negative(state: &mut State) {
             }
         });
     let movement = NormalizedVector {
-        x: minx*(-1),
-        y: miny*(-1),
+        x: minx * (-1),
+        y: miny * (-1),
     };
     state.graph.vertexes.iter()
         .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), movement)); });
