@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use image::{Rgba, RgbaImage};
 use imageproc::drawing::*;
 use rusttype::{Font, Scale};

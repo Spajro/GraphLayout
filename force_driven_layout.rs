@@ -20,6 +20,8 @@ struct ForcePair {
     second_force: Force,
 }
 
+static EDGE_FORCE: f64 = 0.2;
+
 pub fn iterate(state: &mut State) {
     let mut force_pairs = LinkedList::new();
     let mut forces = LinkedList::new();
@@ -49,8 +51,7 @@ pub fn iterate(state: &mut State) {
 fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     let first_position = *state.positions.get(&edge.first).unwrap();
     let second_position = *state.positions.get(&edge.second).unwrap();
-    //let cnst: f64 = 0.5 / (state.graph.edges.len() as f64);
-    let cnst: f64 = 0.125;
+    let cnst: f64 = EDGE_FORCE;
     println!("EDGE V({})->V({}) => {},{}", edge.first.id, edge.second.id,
              scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).x,
              scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).y);
@@ -72,9 +73,8 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
 fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -> ForcePair {
     let first_position = *state.positions.get(first).unwrap();
     let second_position = *state.positions.get(second).unwrap();
-    //let cnst: f64 = 2.0 / (state.graph.vertexes.len() as f64).powf(2.0);
-    let cnst: f64 = 1.0 / 12.0;
-
+    let cnst: f64 = EDGE_FORCE * (edge_forces_count(state) as f64) / (vertex_forces_count(state) as f64);
+    println!("vertex_force = {}",cnst);
     println!("VERT {},{} <-> {},{}", first_position.x, first_position.y, second_position.x, second_position.y);
     println!("VERT V({})->V({}) => {},{}", first.id, second.id,
              scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).x,
@@ -100,4 +100,12 @@ fn apply_force_to_state(force: Force, state: &mut State) {
     state.positions.insert(force.vertex.clone(),
                            add(*state.positions.get(&force.vertex).unwrap(),
                                force.position_diff));
+}
+
+fn edge_forces_count(state: &State) -> usize {
+    state.graph.edges.len() * 2
+}
+
+fn vertex_forces_count(state: &State) -> usize {
+    state.graph.vertexes.len() * (state.graph.vertexes.len() - 1)
 }

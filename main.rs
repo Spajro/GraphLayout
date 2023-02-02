@@ -27,7 +27,7 @@ fn test_with_input() {
     state.positions.insert(Vertex { id: 2, label: "beta".to_string() }, Position { x: 100, y: 300 });
     state.positions.insert(Vertex { id: 3, label: "gamma".to_string() }, Position { x: 300, y: 300 });
     state.positions.insert(Vertex { id: 4, label: "epsilon".to_string() }, Position { x: 300, y: 100 });
-    for _i in 0..10 {
+    for _i in 0..20 {
         display(state);
         iterate(state);
     }
