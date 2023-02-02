@@ -7,8 +7,8 @@ use crate::math2d::{add, NormalizedVector, scale_position_x, scale_position_y};
 
 static WIDTH: u32 = 1920;
 static HEIGHT: u32 = 1080;
-static DRAW_WIDTH: u32 = 1720;
-static DRAW_HEIGHT: u32 = 880;
+static DRAW_WIDTH: u32 = WIDTH - 200;
+static DRAW_HEIGHT: u32 = HEIGHT - 200;
 
 pub fn draw(state: &mut State) {
     let mut image = RgbaImage::new(WIDTH, HEIGHT);
@@ -18,7 +18,7 @@ pub fn draw(state: &mut State) {
     });
     adjust(state);
     state.graph.vertexes.iter().for_each(|vertex| {
-        println!("DRAW {} AT {},{}",
+        println!("DRAW VERTEX {} AT {},{}",
                  vertex.label,
                  state.positions.get(&vertex).unwrap().x,
                  state.positions.get(&vertex).unwrap().y);
@@ -29,6 +29,19 @@ pub fn draw(state: &mut State) {
                                        Scale { x: 30.0, y: 30.0 },
                                        font,
                                        vertex.label.as_str());
+    });
+    state.graph.edges.iter().for_each(|edge| {
+        println!("DRAW EDGE {} -> {} AT {},{} => {},{}",
+                 edge.first.label,
+                 edge.second.label,
+                 state.positions.get(&edge.first).unwrap().x,
+                 state.positions.get(&edge.first).unwrap().y,
+                 state.positions.get(&edge.second).unwrap().x,
+                 state.positions.get(&edge.second).unwrap().y);
+        image = draw_line_segment(&image,
+                                  (state.positions.get(&edge.first).unwrap().x as f32, state.positions.get(&edge.first).unwrap().y as f32),
+                                  (state.positions.get(&edge.second).unwrap().x as f32, state.positions.get(&edge.second).unwrap().y as f32),
+                                  Rgba([60, 252, 91, 16]));
     });
     let _ = image.save("result.jpg");
 }
@@ -61,7 +74,7 @@ fn adjust_to_non_negative(state: &mut State) {
 fn adjust_scale(state: &mut State) {
     let mut maxx: i32 = DRAW_WIDTH as i32;
     let mut maxy: i32 = DRAW_HEIGHT as i32;
-    let final_move = NormalizedVector {
+    let final_movement = NormalizedVector {
         x: ((WIDTH - DRAW_WIDTH) / 2) as i32,
         y: ((HEIGHT - DRAW_HEIGHT) / 2) as i32,
     };
@@ -85,5 +98,5 @@ fn adjust_scale(state: &mut State) {
             .for_each(|vertex| { state.positions.insert(vertex.clone(), scale_position_y(state.positions.get(vertex).unwrap().clone(), diff)); });
     }
     state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), final_move)); });
+        .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), final_movement)); });
 }
