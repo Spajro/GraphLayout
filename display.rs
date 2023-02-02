@@ -3,9 +3,12 @@ use imageproc::drawing::*;
 use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
 use crate::math2d::{add, NormalizedVector, scale_position_x, scale_position_y};
+use crate::Position;
 
 static WIDTH: u32 = 1920;
 static HEIGHT: u32 = 1080;
+static DRAW_WIDTH: u32 = 1720;
+static DRAW_HEIGHT: u32 = 880;
 
 pub fn draw(state: &mut State) {
     state.graph.vertexes.iter().for_each(|vertex|
@@ -60,8 +63,12 @@ fn adjust_to_non_negative(state: &mut State) {
 }
 
 fn adjust_scale(state: &mut State) {
-    let mut maxx: i32 = WIDTH as i32;
-    let mut maxy: i32 = HEIGHT as i32;
+    let mut maxx: i32 = DRAW_WIDTH as i32;
+    let mut maxy: i32 = DRAW_HEIGHT as i32;
+    let final_move = NormalizedVector {
+        x: ((WIDTH - DRAW_WIDTH) / 2) as i32,
+        y: ((HEIGHT - DRAW_HEIGHT) / 2) as i32,
+    };
     state.positions.iter()
         .for_each(|pair| {
             if pair.1.x > maxx {
@@ -71,14 +78,16 @@ fn adjust_scale(state: &mut State) {
                 maxy = pair.1.y;
             }
         });
-    if maxx > WIDTH as i32 {
-        let diff: f64 = (WIDTH as f64) / (maxx as f64);
+    if maxx > DRAW_WIDTH as i32 {
+        let diff: f64 = (DRAW_WIDTH as f64) / (maxx as f64);
         state.graph.vertexes.iter()
             .for_each(|vertex| { state.positions.insert(vertex.clone(), scale_position_x(state.positions.get(vertex).unwrap().clone(), diff)); });
     }
-    if maxy > HEIGHT as i32 {
-        let diff: f64 = (HEIGHT as f64) / (maxy as f64);
+    if maxy > DRAW_HEIGHT as i32 {
+        let diff: f64 = (DRAW_HEIGHT as f64) / (maxy as f64);
         state.graph.vertexes.iter()
             .for_each(|vertex| { state.positions.insert(vertex.clone(), scale_position_y(state.positions.get(vertex).unwrap().clone(), diff)); });
     }
+    state.graph.vertexes.iter()
+        .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), final_move)); });
 }
