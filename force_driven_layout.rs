@@ -43,7 +43,6 @@ pub fn iterate(state: &mut State) {
             joined.insert(force.vertex.clone(),
                           join(*joined.get(&force.vertex).unwrap(), force.position_diff));
         });
-    joined.iter().for_each(|pair| println!("V{} -> {},{}", pair.0.id, pair.1.x, pair.1.y));
     joined.iter().map(|pair| Force { vertex: pair.0.clone(), position_diff: *pair.1 })
         .for_each(|force| apply_force_to_state(force, state));
 }
@@ -52,12 +51,6 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     let first_position = *state.positions.get(&edge.first).unwrap();
     let second_position = *state.positions.get(&edge.second).unwrap();
     let cnst: f64 = EDGE_FORCE;
-    println!("EDGE V({})->V({}) => {},{}", edge.first.id, edge.second.id,
-             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).x,
-             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).y);
-    println!("EDGE V({})->V({}) => {},{}", edge.second.id, edge.first.id,
-             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).x,
-             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).y);
     return ForcePair {
         first_force: Force {
             vertex: edge.first.clone(),
@@ -74,15 +67,6 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
     let first_position = *state.positions.get(first).unwrap();
     let second_position = *state.positions.get(second).unwrap();
     let cnst: f64 = EDGE_FORCE * (edge_forces_count(state) as f64) / (vertex_forces_count(state) as f64);
-    println!("vertex_force = {}",cnst);
-    println!("VERT {},{} <-> {},{}", first_position.x, first_position.y, second_position.x, second_position.y);
-    println!("VERT V({})->V({}) => {},{}", first.id, second.id,
-             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).x,
-             scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst).y);
-    println!("VERT V({})->V({}) => {},{}", second.id, first.id,
-             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).x,
-             scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst).y);
-
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),

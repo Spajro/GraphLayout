@@ -1,0 +1,13 @@
+vertex1,vertex2
+central,first
+central,second
+central,third
+central,fourth
+central,fifth
+central,sixth
+first,second
+second,third
+third,fourth
+fourth,fifth
+fifth,sixth
+sixth,first

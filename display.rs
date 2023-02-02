@@ -3,7 +3,7 @@ use imageproc::drawing::*;
 use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
 use crate::math2d::{add, NormalizedVector, scale_position_x, scale_position_y};
-use crate::Position;
+
 
 static WIDTH: u32 = 1920;
 static HEIGHT: u32 = 1080;
@@ -11,16 +11,12 @@ static DRAW_WIDTH: u32 = 1720;
 static DRAW_HEIGHT: u32 = 880;
 
 pub fn draw(state: &mut State) {
-    state.graph.vertexes.iter().for_each(|vertex|
-        println!("ADJUST AT {},{}",
-                 state.positions.get(&vertex).unwrap().x,
-                 state.positions.get(&vertex).unwrap().y));
-    adjust(state);
     let mut image = RgbaImage::new(WIDTH, HEIGHT);
     let data = std::fs::read("resources/Millenia.ttf").unwrap();
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
     });
+    adjust(state);
     state.graph.vertexes.iter().for_each(|vertex| {
         println!("DRAW {} AT {},{}",
                  vertex.label,
