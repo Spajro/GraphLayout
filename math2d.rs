@@ -16,7 +16,7 @@ pub struct NormalizedVector {
     pub(crate) y: i32,
 }
 
-pub fn diff(vector: Vector) -> NormalizedVector {
+pub fn to_normalized(vector: Vector) -> NormalizedVector {
     NormalizedVector {
         x: vector.second.x - vector.first.x,
         y: vector.second.y - vector.first.y,

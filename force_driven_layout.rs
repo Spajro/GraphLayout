@@ -54,11 +54,11 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     return ForcePair {
         first_force: Force {
             vertex: edge.first.clone(),
-            position_diff: scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_normalized_vector(to_normalized(Vector { first: first_position, second: second_position }), cnst),
         },
         second_force: Force {
             vertex: edge.second.clone(),
-            position_diff: scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_normalized_vector(to_normalized(Vector { first: second_position, second: first_position }), cnst),
         },
     };
 }
@@ -70,11 +70,11 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),
-            position_diff: scale_normalized_vector(diff(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_normalized_vector(to_normalized(Vector { first: second_position, second: first_position }), cnst),
         },
         second_force: Force {
             vertex: second.clone(),
-            position_diff: scale_normalized_vector(diff(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_normalized_vector(to_normalized(Vector { first: first_position, second: second_position }), cnst),
         },
     };
 }

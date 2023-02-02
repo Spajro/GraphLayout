@@ -6,7 +6,6 @@ use crate::graph::*;
 pub fn input(file_path: String) -> Result<Graph, Box<dyn Error>> {
     let file = File::open(file_path)?;
     let mut rdr = csv::Reader::from_reader(file);
-
     let mut id = 0;
     let mut vertexes: HashMap<String, Vertex> = HashMap::new();
     let mut edges: Vec<Edge> = Vec::new();

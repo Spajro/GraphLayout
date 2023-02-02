@@ -14,16 +14,21 @@ use crate::force_driven_layout::iterate;
 use crate::input_csv::input;
 
 fn main() {
-    let state = &mut State {
-        graph: input("examples/hexagon.csv".to_string()).unwrap(),
-        positions: Default::default(),
-    };
-    state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), random_position()); });
+    let state = &mut prepare_state("examples/hexagon.csv".to_string());
     for _i in 0..10 {
         iterate(state);
     }
     draw(state);
+}
+
+fn prepare_state(graph_file_path: String) -> State {
+    let mut state = State {
+        graph: input(graph_file_path).unwrap(),
+        positions: Default::default(),
+    };
+    state.graph.vertexes.iter()
+        .for_each(|vertex| { state.positions.insert(vertex.clone(), random_position()); });
+    state
 }
 
 fn random_position() -> Position {

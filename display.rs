@@ -4,7 +4,6 @@ use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
 use crate::math2d::{add, NormalizedVector, scale_position_x, scale_position_y};
 
-
 static WIDTH: u32 = 1920;
 static HEIGHT: u32 = 1080;
 static DRAW_WIDTH: u32 = WIDTH - 200;
@@ -90,13 +89,25 @@ fn adjust_scale(state: &mut State) {
     if maxx > DRAW_WIDTH as i32 {
         let diff: f64 = (DRAW_WIDTH as f64) / (maxx as f64);
         state.graph.vertexes.iter()
-            .for_each(|vertex| { state.positions.insert(vertex.clone(), scale_position_x(state.positions.get(vertex).unwrap().clone(), diff)); });
+            .for_each(|vertex| {
+                state.positions.insert(
+                    vertex.clone(),
+                    scale_position_x(state.positions.get(vertex).unwrap().clone(), diff));
+            });
     }
     if maxy > DRAW_HEIGHT as i32 {
         let diff: f64 = (DRAW_HEIGHT as f64) / (maxy as f64);
         state.graph.vertexes.iter()
-            .for_each(|vertex| { state.positions.insert(vertex.clone(), scale_position_y(state.positions.get(vertex).unwrap().clone(), diff)); });
+            .for_each(|vertex| {
+                state.positions.insert(
+                    vertex.clone(),
+                    scale_position_y(state.positions.get(vertex).unwrap().clone(), diff));
+            });
     }
     state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), final_movement)); });
+        .for_each(|vertex| {
+            state.positions.insert(
+                vertex.clone(),
+                add(state.positions.get(vertex).unwrap().clone(), final_movement));
+        });
 }
