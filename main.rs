@@ -15,8 +15,13 @@ use crate::input_csv::input;
 
 fn main() {
     let state = &mut prepare_state("examples/hexagon.csv".to_string());
-    for _i in 0..10 {
+    for i in 0..20 {
+        println!("[{}/{}] iterating",
+                 i,
+                 20
+        );
         iterate(state);
+        display::adjust(state);
     }
     draw(state);
 }
