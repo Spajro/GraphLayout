@@ -6,6 +6,7 @@ mod display;
 
 extern crate core;
 
+use std::env;
 use rand::random;
 use crate::display::draw;
 use crate::force_driven_layout::State;
@@ -13,17 +14,24 @@ use crate::math2d::Position;
 use crate::force_driven_layout::iterate;
 use crate::input_csv::input;
 
+static ITERATIONS: i32 = 10;
+
 fn main() {
-    let state = &mut prepare_state("examples/hexagon.csv".to_string());
-    for i in 0..20 {
-        println!("[{}/{}] iterating",
-                 i,
-                 20
-        );
-        iterate(state);
-        display::adjust(state);
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 {
+        let path = args.get(1).unwrap().clone();
+        let state = &mut prepare_state(path);
+        for i in 0..ITERATIONS {
+            println!("[{}/{}] iterating",
+                     i,
+                     ITERATIONS
+            );
+            iterate(state);
+        }
+        draw(state);
+    } else {
+        println!("Usage: ./GraphLayout 'file.csv'");
     }
-    draw(state);
 }
 
 fn prepare_state(graph_file_path: String) -> State {
