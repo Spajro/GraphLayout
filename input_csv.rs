@@ -9,6 +9,7 @@ pub fn input(file_path: String) -> Result<Graph, Box<dyn Error>> {
     let mut id = 0;
     let mut vertexes: HashMap<String, Vertex> = HashMap::new();
     let mut edges: Vec<Edge> = Vec::new();
+
     rdr.records().for_each(|record| {
         let rec = record.unwrap();
         let s1 = rec.get(0).unwrap().to_string().clone();
@@ -24,6 +25,7 @@ pub fn input(file_path: String) -> Result<Graph, Box<dyn Error>> {
             vertexes.insert(s1, vertex.clone());
             vertex
         };
+
         let vertex2 = if vertexes.contains_key(&s2) {
             vertexes.get(&s2).unwrap().clone()
         } else {
@@ -35,6 +37,7 @@ pub fn input(file_path: String) -> Result<Graph, Box<dyn Error>> {
             vertexes.insert(s2, vertex.clone());
             vertex
         };
+
         edges.push(Edge { first: vertex1.clone(), second: vertex2.clone() });
     });
 

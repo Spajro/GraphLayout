@@ -15,7 +15,9 @@ pub fn draw(state: &mut State) {
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
     });
+
     adjust(state);
+
     let mut i = 1;
     state.graph.vertexes.iter().for_each(|vertex| {
         println!("[{}/{}] DRAW VERTEX {} AT {},{}",
@@ -24,7 +26,9 @@ pub fn draw(state: &mut State) {
                  vertex.label,
                  state.positions.get(&vertex).unwrap().x,
                  state.positions.get(&vertex).unwrap().y);
+
         i += 1;
+
         image = draw_text::<RgbaImage>(&image,
                                        Rgba([206, 127, 223, 200]),
                                        state.positions.get(&vertex).unwrap().x,
@@ -33,7 +37,9 @@ pub fn draw(state: &mut State) {
                                        font,
                                        vertex.label.as_str());
     });
+
     i = 1;
+
     state.graph.edges.iter().for_each(|edge| {
         println!("[{}/{}] DRAW EDGE {} -> {} AT {},{} => {},{}",
                  i,
@@ -44,12 +50,15 @@ pub fn draw(state: &mut State) {
                  state.positions.get(&edge.first).unwrap().y,
                  state.positions.get(&edge.second).unwrap().x,
                  state.positions.get(&edge.second).unwrap().y);
+
         i += 1;
+
         image = draw_line_segment(&image,
                                   (state.positions.get(&edge.first).unwrap().x as f32, state.positions.get(&edge.first).unwrap().y as f32),
                                   (state.positions.get(&edge.second).unwrap().x as f32, state.positions.get(&edge.second).unwrap().y as f32),
                                   Rgba([60, 252, 91, 200]));
     });
+
     let _ = image.save("result.png");
 }
 
@@ -61,6 +70,7 @@ pub(crate) fn adjust(state: &mut State) {
 fn adjust_to_non_negative(state: &mut State) {
     let mut minx = 0;
     let mut miny = 0;
+
     state.positions.iter()
         .for_each(|pair| {
             if pair.1.x < minx {
@@ -70,10 +80,12 @@ fn adjust_to_non_negative(state: &mut State) {
                 miny = pair.1.y;
             }
         });
+
     let movement = NormalizedVector {
         x: minx * (-1),
         y: miny * (-1),
     };
+
     state.graph.vertexes.iter()
         .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), movement)); });
 }
@@ -85,6 +97,7 @@ fn adjust_scale(state: &mut State) {
         x: ((WIDTH - DRAW_WIDTH) / 2) as i32,
         y: ((HEIGHT - DRAW_HEIGHT) / 2) as i32,
     };
+
     state.positions.iter()
         .for_each(|pair| {
             if pair.1.x > maxx {
@@ -94,6 +107,7 @@ fn adjust_scale(state: &mut State) {
                 maxy = pair.1.y;
             }
         });
+
     if maxx > DRAW_WIDTH as i32 {
         let diff: f64 = (DRAW_WIDTH as f64) / (maxx as f64);
         state.graph.vertexes.iter()
@@ -103,6 +117,7 @@ fn adjust_scale(state: &mut State) {
                     scale_position_x(state.positions.get(vertex).unwrap().clone(), diff));
             });
     }
+
     if maxy > DRAW_HEIGHT as i32 {
         let diff: f64 = (DRAW_HEIGHT as f64) / (maxy as f64);
         state.graph.vertexes.iter()
@@ -112,6 +127,7 @@ fn adjust_scale(state: &mut State) {
                     scale_position_y(state.positions.get(vertex).unwrap().clone(), diff));
             });
     }
+
     state.graph.vertexes.iter()
         .for_each(|vertex| {
             state.positions.insert(

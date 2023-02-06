@@ -20,29 +20,35 @@ struct ForcePair {
     second_force: Force,
 }
 
-static EDGE_FORCE: f64 = 0.2;
+static EDGE_FORCE: f64 = 0.3;
 
 pub fn iterate(state: &mut State) {
     let mut force_pairs = LinkedList::new();
     let mut forces = LinkedList::new();
     let mut joined: HashMap<Vertex, NormalizedVector> = HashMap::new();
+
     state.graph.edges.iter()
         .for_each(|edge| force_pairs.push_back(edge_to_force_pair(edge, state)));
+
     state.graph.vertexes.iter()
         .for_each(|v1| state.graph.vertexes.iter()
             .for_each(|v2| force_pairs.push_back(vertexes_pair_to_force_pair(v1, v2, state))));
+
     force_pairs.iter()
         .for_each(|force_pair| {
             forces.push_back(force_pair.first_force.clone());
             forces.push_back(force_pair.second_force.clone());
         });
+
     state.graph.vertexes.iter()
         .for_each(|vertex| { joined.insert(vertex.clone(), NormalizedVector { x: 0, y: 0 }); });
+
     forces.iter()
         .for_each(|force| {
             joined.insert(force.vertex.clone(),
                           join(*joined.get(&force.vertex).unwrap(), force.position_diff));
         });
+
     joined.iter().map(|pair| Force { vertex: pair.0.clone(), position_diff: *pair.1 })
         .for_each(|force| apply_force_to_state(force, state));
 }

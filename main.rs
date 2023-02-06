@@ -21,6 +21,7 @@ fn main() {
     if args.len() > 1 {
         let path = args.get(1).unwrap().clone();
         let state = &mut prepare_state(path);
+
         for i in 0..ITERATIONS {
             println!("[{}/{}] iterating",
                      i,
@@ -39,8 +40,10 @@ fn prepare_state(graph_file_path: String) -> State {
         graph: input(graph_file_path).unwrap(),
         positions: Default::default(),
     };
+
     state.graph.vertexes.iter()
         .for_each(|vertex| { state.positions.insert(vertex.clone(), random_position()); });
+    
     state
 }
 
