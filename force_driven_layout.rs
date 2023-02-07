@@ -11,7 +11,7 @@ pub struct State {
 #[derive(Clone)]
 struct Force {
     vertex: Vertex,
-    position_diff: NormalizedVector,
+    position_diff: StandardVector,
 }
 
 #[derive(Clone)]
@@ -25,7 +25,7 @@ static EDGE_FORCE: f64 = 0.3;
 pub fn iterate(state: &mut State) {
     let mut force_pairs = LinkedList::new();
     let mut forces = LinkedList::new();
-    let mut joined: HashMap<Vertex, NormalizedVector> = HashMap::new();
+    let mut joined: HashMap<Vertex, StandardVector> = HashMap::new();
 
     state.graph.edges.iter()
         .for_each(|edge| force_pairs.push_back(edge_to_force_pair(edge, state)));
@@ -41,7 +41,7 @@ pub fn iterate(state: &mut State) {
         });
 
     state.graph.vertexes.iter()
-        .for_each(|vertex| { joined.insert(vertex.clone(), NormalizedVector { x: 0, y: 0 }); });
+        .for_each(|vertex| { joined.insert(vertex.clone(), StandardVector { x: 0, y: 0 }); });
 
     forces.iter()
         .for_each(|force| {
@@ -60,11 +60,11 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     return ForcePair {
         first_force: Force {
             vertex: edge.first.clone(),
-            position_diff: scale_normalized_vector(to_normalized(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_standard_vector(to_standard(Vector { first: first_position, second: second_position }), cnst),
         },
         second_force: Force {
             vertex: edge.second.clone(),
-            position_diff: scale_normalized_vector(to_normalized(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_standard_vector(to_standard(Vector { first: second_position, second: first_position }), cnst),
         },
     };
 }
@@ -76,11 +76,11 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),
-            position_diff: scale_normalized_vector(to_normalized(Vector { first: second_position, second: first_position }), cnst),
+            position_diff: scale_standard_vector(to_standard(Vector { first: second_position, second: first_position }), cnst),
         },
         second_force: Force {
             vertex: second.clone(),
-            position_diff: scale_normalized_vector(to_normalized(Vector { first: first_position, second: second_position }), cnst),
+            position_diff: scale_standard_vector(to_standard(Vector { first: first_position, second: second_position }), cnst),
         },
     };
 }

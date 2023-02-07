@@ -3,7 +3,7 @@ use imageproc::drawing::*;
 use imageproc::pixelops::interpolate;
 use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
-use crate::math2d::{add, NormalizedVector, scale_position_x, scale_position_y};
+use crate::math2d::{add, StandardVector, scale_position_x, scale_position_y};
 
 static WIDTH: u32 = 3840;
 static HEIGHT: u32 = 2160;
@@ -34,7 +34,7 @@ pub fn draw(state: &mut State) {
                                        Rgba([206, 127, 223, 200]),
                                        state.positions.get(&vertex).unwrap().x,
                                        state.positions.get(&vertex).unwrap().y,
-                                       Scale { x: 50.0, y: 50.0 },
+                                       Scale { x: 10.0, y: 10.0 },
                                        font,
                                        vertex.label.as_str());
     });
@@ -83,7 +83,7 @@ fn adjust_to_non_negative(state: &mut State) {
             }
         });
 
-    let movement = NormalizedVector {
+    let movement = StandardVector {
         x: minx * (-1),
         y: miny * (-1),
     };
@@ -95,7 +95,7 @@ fn adjust_to_non_negative(state: &mut State) {
 fn adjust_scale(state: &mut State) {
     let mut maxx: i32 = DRAW_WIDTH as i32;
     let mut maxy: i32 = DRAW_HEIGHT as i32;
-    let final_movement = NormalizedVector {
+    let final_movement = StandardVector {
         x: ((WIDTH - DRAW_WIDTH) / 2) as i32,
         y: ((HEIGHT - DRAW_HEIGHT) / 2) as i32,
     };
