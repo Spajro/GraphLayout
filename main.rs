@@ -1,6 +1,6 @@
 mod force_driven_layout;
 mod graph;
-mod math2d;
+mod vectors;
 mod input_csv;
 mod display;
 
@@ -10,7 +10,7 @@ use std::env;
 use rand::random;
 use crate::display::draw;
 use crate::force_driven_layout::State;
-use crate::math2d::Position;
+use crate::vectors::Position;
 use crate::force_driven_layout::iterate;
 use crate::input_csv::input;
 

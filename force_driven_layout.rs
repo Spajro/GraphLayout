@@ -1,6 +1,6 @@
 use std::collections::{HashMap, LinkedList};
 use crate::graph::*;
-use crate::math2d::*;
+use crate::vectors::*;
 
 #[derive(Clone)]
 pub struct State {
@@ -46,7 +46,7 @@ pub fn iterate(state: &mut State) {
     forces.iter()
         .for_each(|force| {
             joined.insert(force.vertex.clone(),
-                          join(*joined.get(&force.vertex).unwrap(), force.position_diff));
+                          add_vectors(*joined.get(&force.vertex).unwrap(), force.position_diff));
         });
 
     joined.iter().map(|pair| Force { vertex: pair.0.clone(), position_diff: *pair.1 })
@@ -88,8 +88,8 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
 
 fn apply_force_to_state(force: Force, state: &mut State) {
     state.positions.insert(force.vertex.clone(),
-                           add(*state.positions.get(&force.vertex).unwrap(),
-                               force.position_diff));
+                           move_position_by_vector(*state.positions.get(&force.vertex).unwrap(),
+                                                   force.position_diff));
 }
 
 fn edge_forces_count(state: &State) -> usize {

@@ -3,7 +3,7 @@ use imageproc::drawing::*;
 use imageproc::pixelops::interpolate;
 use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
-use crate::math2d::{add, StandardVector, scale_position_x, scale_position_y};
+use crate::vectors::{move_position_by_vector, StandardVector, scale_position_x, scale_position_y};
 
 static WIDTH: u32 = 3840;
 static HEIGHT: u32 = 2160;
@@ -89,7 +89,7 @@ fn adjust_to_non_negative(state: &mut State) {
     };
 
     state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), add(state.positions.get(vertex).unwrap().clone(), movement)); });
+        .for_each(|vertex| { state.positions.insert(vertex.clone(), move_position_by_vector(state.positions.get(vertex).unwrap().clone(), movement)); });
 }
 
 fn adjust_scale(state: &mut State) {
@@ -134,6 +134,6 @@ fn adjust_scale(state: &mut State) {
         .for_each(|vertex| {
             state.positions.insert(
                 vertex.clone(),
-                add(state.positions.get(vertex).unwrap().clone(), final_movement));
+                move_position_by_vector(state.positions.get(vertex).unwrap().clone(), final_movement));
         });
 }
