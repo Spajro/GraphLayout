@@ -14,7 +14,7 @@ use crate::vectors::Position;
 use crate::force_driven_layout::iterate;
 use crate::input_csv::input;
 
-static ITERATIONS: i32 = 10;
+static ITERATIONS: i32 = 100;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -43,7 +43,7 @@ fn prepare_state(graph_file_path: String) -> State {
 
     state.graph.vertexes.iter()
         .for_each(|vertex| { state.positions.insert(vertex.clone(), random_position()); });
-    
+
     state
 }
 

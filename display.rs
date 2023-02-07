@@ -34,7 +34,7 @@ pub fn draw(state: &mut State) {
                                        Rgba([206, 127, 223, 200]),
                                        state.positions.get(&vertex).unwrap().x,
                                        state.positions.get(&vertex).unwrap().y,
-                                       Scale { x: 10.0, y: 10.0 },
+                                       Scale { x: 20.0, y: 20.0 },
                                        font,
                                        vertex.label.as_str());
     });

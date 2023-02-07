@@ -42,7 +42,7 @@ pub fn normalized_to_standard(vector: NormalizedVector, length: f64) -> Standard
     }
 }
 
-fn standard_len(vector: StandardVector) -> f64 {
+pub fn standard_len(vector: StandardVector) -> f64 {
     ((vector.x.pow(2) + vector.y.pow(2)) as f64).sqrt()
 }
 

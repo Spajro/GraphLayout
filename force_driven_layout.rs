@@ -11,7 +11,7 @@ pub struct State {
 #[derive(Clone)]
 struct Force {
     vertex: Vertex,
-    position_diff: StandardVector,
+    vector: StandardVector,
 }
 
 #[derive(Clone)]
@@ -20,7 +20,9 @@ struct ForcePair {
     second_force: Force,
 }
 
-static EDGE_FORCE: f64 = 0.3;
+static EDGE_FORCE_LENGTH: f64 = 100.0;
+static OPTIMAL_DISTANCE: f64 = 200.0;
+static GRAPH_FORCE_FACTOR: f64 = EDGE_FORCE_LENGTH * OPTIMAL_DISTANCE;
 
 pub fn iterate(state: &mut State) {
     let mut force_pairs = LinkedList::new();
@@ -46,25 +48,24 @@ pub fn iterate(state: &mut State) {
     forces.iter()
         .for_each(|force| {
             joined.insert(force.vertex.clone(),
-                          add_vectors(*joined.get(&force.vertex).unwrap(), force.position_diff));
+                          add_vectors(*joined.get(&force.vertex).unwrap(), force.vector));
         });
 
-    joined.iter().map(|pair| Force { vertex: pair.0.clone(), position_diff: *pair.1 })
+    joined.iter().map(|pair| Force { vertex: pair.0.clone(), vector: *pair.1 })
         .for_each(|force| apply_force_to_state(force, state));
 }
 
 fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
     let first_position = *state.positions.get(&edge.first).unwrap();
     let second_position = *state.positions.get(&edge.second).unwrap();
-    let cnst: f64 = EDGE_FORCE;
     return ForcePair {
         first_force: Force {
             vertex: edge.first.clone(),
-            position_diff: scale_standard_vector(to_standard(Vector { first: first_position, second: second_position }), cnst),
+            vector: vector_to_force_vector(Vector { first: first_position, second: second_position }, EDGE_FORCE_LENGTH),
         },
         second_force: Force {
             vertex: edge.second.clone(),
-            position_diff: scale_standard_vector(to_standard(Vector { first: second_position, second: first_position }), cnst),
+            vector: vector_to_force_vector(Vector { first: second_position, second: first_position }, EDGE_FORCE_LENGTH),
         },
     };
 }
@@ -72,30 +73,25 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
 fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -> ForcePair {
     let first_position = *state.positions.get(first).unwrap();
     let second_position = *state.positions.get(second).unwrap();
-    let cnst: f64 = EDGE_FORCE * (edge_forces_count(state) as f64) / (vertex_forces_count(state) as f64);
+    let len: f64 = GRAPH_FORCE_FACTOR / standard_len(to_standard(Vector { first: second_position, second: first_position }));
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),
-            position_diff: scale_standard_vector(to_standard(Vector { first: second_position, second: first_position }), cnst),
+            vector: vector_to_force_vector(Vector { first: second_position, second: first_position }, len),
         },
         second_force: Force {
             vertex: second.clone(),
-            position_diff: scale_standard_vector(to_standard(Vector { first: first_position, second: second_position }), cnst),
+            vector: vector_to_force_vector(Vector { first: first_position, second: second_position }, len),
         },
     };
+}
+
+fn vector_to_force_vector(vector: Vector, new_length: f64) -> StandardVector {
+    normalized_to_standard(standard_to_normalized(to_standard(vector)), new_length)
 }
 
 
 fn apply_force_to_state(force: Force, state: &mut State) {
     state.positions.insert(force.vertex.clone(),
-                           move_position_by_vector(*state.positions.get(&force.vertex).unwrap(),
-                                                   force.position_diff));
-}
-
-fn edge_forces_count(state: &State) -> usize {
-    state.graph.edges.len() * 2
-}
-
-fn vertex_forces_count(state: &State) -> usize {
-    state.graph.vertexes.len() * (state.graph.vertexes.len() - 1)
+                           move_position_by_vector(*state.positions.get(&force.vertex).unwrap(), force.vector));
 }
