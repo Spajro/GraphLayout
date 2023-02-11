@@ -12,7 +12,7 @@ static DRAW_HEIGHT: u32 = HEIGHT - 200;
 
 pub fn draw(state: &mut State) {
     let mut image = RgbaImage::new(WIDTH, HEIGHT);
-    let data = std::fs::read("resources/GloriousFree.ttf").unwrap();
+    let data = std::fs::read("resources/Millenia.ttf").unwrap();
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
     });
@@ -30,13 +30,13 @@ pub fn draw(state: &mut State) {
 
         i += 1;
 
-        image = draw_text::<RgbaImage>(&image,
-                                       Rgba([206, 127, 223, 200]),
-                                       state.positions.get(&vertex).unwrap().x,
-                                       state.positions.get(&vertex).unwrap().y,
-                                       Scale { x: 20.0, y: 20.0 },
-                                       font,
-                                       vertex.label.as_str());
+        draw_text_mut::<RgbaImage>(&mut image,
+                                   Rgba([206, 127, 223, 200]),
+                                   state.positions.get(&vertex).unwrap().x,
+                                   state.positions.get(&vertex).unwrap().y,
+                                   Scale { x: 20.0, y: 20.0 },
+                                   font,
+                                   vertex.label.as_str());
     });
 
     i = 1;
@@ -54,11 +54,11 @@ pub fn draw(state: &mut State) {
 
         i += 1;
 
-        image = draw_antialiased_line_segment(&image,
-                                              (state.positions.get(&edge.first).unwrap().x, state.positions.get(&edge.first).unwrap().y),
-                                              (state.positions.get(&edge.second).unwrap().x, state.positions.get(&edge.second).unwrap().y),
-                                              Rgba([60, 252, 91, 200]),
-                                              interpolate);
+        draw_antialiased_line_segment_mut(&mut image,
+                                          (state.positions.get(&edge.first).unwrap().x, state.positions.get(&edge.first).unwrap().y),
+                                          (state.positions.get(&edge.second).unwrap().x, state.positions.get(&edge.second).unwrap().y),
+                                          Rgba([60, 252, 91, 200]),
+                                          interpolate);
     });
 
     let _ = image.save("result.png");
