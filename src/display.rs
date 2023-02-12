@@ -7,7 +7,7 @@ use crate::vectors::{move_position_by_vector, StandardVector, scale_position_x, 
 
 pub fn draw(state: &mut State) {
     let mut image = RgbaImage::new(state.config.image_width, state.config.image_height);
-    let data = std::fs::read("resources/Millenia.ttf").unwrap();
+    let data = std::fs::read("../resources/Millenia.ttf").unwrap();
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
     });
