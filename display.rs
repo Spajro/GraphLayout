@@ -5,13 +5,8 @@ use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
 use crate::vectors::{move_position_by_vector, StandardVector, scale_position_x, scale_position_y};
 
-static WIDTH: u32 = 3840;
-static HEIGHT: u32 = 2160;
-static DRAW_WIDTH: u32 = WIDTH - 200;
-static DRAW_HEIGHT: u32 = HEIGHT - 200;
-
 pub fn draw(state: &mut State) {
-    let mut image = RgbaImage::new(WIDTH, HEIGHT);
+    let mut image = RgbaImage::new(state.config.image_width, state.config.image_height);
     let data = std::fs::read("resources/Millenia.ttf").unwrap();
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
@@ -93,11 +88,11 @@ fn adjust_to_non_negative(state: &mut State) {
 }
 
 fn adjust_scale(state: &mut State) {
-    let mut maxx: i32 = DRAW_WIDTH as i32;
-    let mut maxy: i32 = DRAW_HEIGHT as i32;
+    let mut maxx: i32 = state.config.draw_width() as i32;
+    let mut maxy: i32 = state.config.draw_height() as i32;
     let final_movement = StandardVector {
-        x: ((WIDTH - DRAW_WIDTH) / 2) as i32,
-        y: ((HEIGHT - DRAW_HEIGHT) / 2) as i32,
+        x: ((state.config.image_width - state.config.draw_width()) / 2) as i32,
+        y: ((state.config.image_height - state.config.draw_height()) / 2) as i32,
     };
 
     state.positions.iter()
@@ -110,8 +105,8 @@ fn adjust_scale(state: &mut State) {
             }
         });
 
-    if maxx > DRAW_WIDTH as i32 {
-        let diff: f64 = (DRAW_WIDTH as f64) / (maxx as f64);
+    if maxx > state.config.draw_width() as i32 {
+        let diff: f64 = (state.config.draw_width() as f64) / (maxx as f64);
         state.graph.vertexes.iter()
             .for_each(|vertex| {
                 state.positions.insert(
@@ -120,8 +115,8 @@ fn adjust_scale(state: &mut State) {
             });
     }
 
-    if maxy > DRAW_HEIGHT as i32 {
-        let diff: f64 = (DRAW_HEIGHT as f64) / (maxy as f64);
+    if maxy > state.config.draw_height() as i32 {
+        let diff: f64 = (state.config.draw_height() as f64) / (maxy as f64);
         state.graph.vertexes.iter()
             .for_each(|vertex| {
                 state.positions.insert(

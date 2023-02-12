@@ -1,4 +1,5 @@
 use std::collections::{HashMap, LinkedList};
+use crate::config::Config;
 use crate::graph::*;
 use crate::vectors::*;
 
@@ -6,6 +7,7 @@ use crate::vectors::*;
 pub struct State {
     pub(crate) graph: Graph,
     pub(crate) positions: HashMap<Vertex, Position>,
+    pub(crate) config:Config,
 }
 
 #[derive(Clone)]
