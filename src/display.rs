@@ -3,7 +3,7 @@ use imageproc::drawing::*;
 use imageproc::pixelops::interpolate;
 use rusttype::{Font, Scale};
 use crate::force_driven_layout::State;
-use crate::vectors::{move_position_by_vector, StandardVector, scale_position_x, scale_position_y};
+use crate::vectors::StandardVector;
 
 pub fn draw(state: &mut State) {
     let mut image = RgbaImage::new(state.config.image_width, state.config.image_height);
@@ -84,7 +84,7 @@ fn adjust_to_non_negative(state: &mut State) {
     };
 
     state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), move_position_by_vector(state.positions.get(vertex).unwrap().clone(), movement)); });
+        .for_each(|vertex| { state.positions.insert(vertex.clone(), state.positions.get(vertex).unwrap().clone().add_vector(movement)); });
 }
 
 fn adjust_scale(state: &mut State) {
@@ -111,7 +111,7 @@ fn adjust_scale(state: &mut State) {
             .for_each(|vertex| {
                 state.positions.insert(
                     vertex.clone(),
-                    scale_position_x(state.positions.get(vertex).unwrap().clone(), diff));
+                    state.positions.get(vertex).unwrap().clone().scale_x(diff));
             });
     }
 
@@ -121,7 +121,7 @@ fn adjust_scale(state: &mut State) {
             .for_each(|vertex| {
                 state.positions.insert(
                     vertex.clone(),
-                    scale_position_y(state.positions.get(vertex).unwrap().clone(), diff));
+                    state.positions.get(vertex).unwrap().clone().scale_y(diff));
             });
     }
 
@@ -129,6 +129,6 @@ fn adjust_scale(state: &mut State) {
         .for_each(|vertex| {
             state.positions.insert(
                 vertex.clone(),
-                move_position_by_vector(state.positions.get(vertex).unwrap().clone(), final_movement));
+                state.positions.get(vertex).unwrap().clone().add_vector(final_movement));
         });
 }

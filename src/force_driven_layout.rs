@@ -7,7 +7,7 @@ use crate::vectors::*;
 pub struct State {
     pub(crate) graph: Graph,
     pub(crate) positions: HashMap<Vertex, Position>,
-    pub(crate) config:Config,
+    pub(crate) config: Config,
 }
 
 #[derive(Clone)]
@@ -50,7 +50,7 @@ pub fn iterate(state: &mut State) {
     forces.iter()
         .for_each(|force| {
             joined.insert(force.vertex.clone(),
-                          add_vectors(*joined.get(&force.vertex).unwrap(), force.vector));
+                          joined.get(&force.vertex).unwrap().add(force.vector));
         });
 
     joined.iter().map(|pair| Force { vertex: pair.0.clone(), vector: *pair.1 })
@@ -75,7 +75,7 @@ fn edge_to_force_pair(edge: &Edge, state: &State) -> ForcePair {
 fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -> ForcePair {
     let first_position = *state.positions.get(first).unwrap();
     let second_position = *state.positions.get(second).unwrap();
-    let len: f64 = GRAPH_FORCE_FACTOR / standard_len(to_standard(Vector { first: second_position, second: first_position }));
+    let len: f64 = GRAPH_FORCE_FACTOR / Vector { first: second_position, second: first_position }.to_standard().len();
     return ForcePair {
         first_force: Force {
             vertex: first.clone(),
@@ -89,11 +89,11 @@ fn vertexes_pair_to_force_pair(first: &Vertex, second: &Vertex, state: &State) -
 }
 
 fn vector_to_force_vector(vector: Vector, new_length: f64) -> StandardVector {
-    normalized_to_standard(standard_to_normalized(to_standard(vector)), new_length)
+    vector.to_standard().to_normalized().to_standard(new_length)
 }
 
 
 fn apply_force_to_state(force: Force, state: &mut State) {
     state.positions.insert(force.vertex.clone(),
-                           move_position_by_vector(*state.positions.get(&force.vertex).unwrap(), force.vector));
+                           state.positions.get(&force.vertex).unwrap().add_vector(force.vector));
 }
