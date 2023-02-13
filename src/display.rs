@@ -7,7 +7,7 @@ use crate::vectors::StandardVector;
 
 pub fn draw(state: &mut State) {
     let mut image = RgbaImage::new(state.config.image_width, state.config.image_height);
-    let data = std::fs::read("../resources/Millenia.ttf").unwrap();
+    let data = std::fs::read("resources/Millenia.ttf").unwrap();
     let font = &Font::try_from_vec(data).unwrap_or_else(|| {
         panic!();
     });
@@ -59,9 +59,10 @@ pub fn draw(state: &mut State) {
     let _ = image.save("result.png");
 }
 
-pub(crate) fn adjust(state: &mut State) {
+fn adjust(state: &mut State) {
     adjust_to_non_negative(state);
     adjust_scale(state);
+    final_adjust(state);
 }
 
 fn adjust_to_non_negative(state: &mut State) {
@@ -83,17 +84,12 @@ fn adjust_to_non_negative(state: &mut State) {
         y: miny * (-1),
     };
 
-    state.graph.vertexes.iter()
-        .for_each(|vertex| { state.positions.insert(vertex.clone(), state.positions.get(vertex).unwrap().clone().add_vector(movement)); });
+    move_state_by_vector(state, movement)
 }
 
 fn adjust_scale(state: &mut State) {
     let mut maxx: i32 = state.config.draw_width() as i32;
     let mut maxy: i32 = state.config.draw_height() as i32;
-    let final_movement = StandardVector {
-        x: ((state.config.image_width - state.config.draw_width()) / 2) as i32,
-        y: ((state.config.image_height - state.config.draw_height()) / 2) as i32,
-    };
 
     state.positions.iter()
         .for_each(|pair| {
@@ -124,11 +120,21 @@ fn adjust_scale(state: &mut State) {
                     state.positions.get(vertex).unwrap().clone().scale_y(diff));
             });
     }
+}
 
+fn final_adjust(state: &mut State) {
+    let final_movement = StandardVector {
+        x: ((state.config.image_width - state.config.draw_width()) / 2) as i32,
+        y: ((state.config.image_height - state.config.draw_height()) / 2) as i32,
+    };
+    move_state_by_vector(state, final_movement);
+}
+
+fn move_state_by_vector(state: &mut State, vector: StandardVector) {
     state.graph.vertexes.iter()
         .for_each(|vertex| {
             state.positions.insert(
                 vertex.clone(),
-                state.positions.get(vertex).unwrap().clone().add_vector(final_movement));
+                state.positions.get(vertex).unwrap().clone().add_vector(vector));
         });
 }
