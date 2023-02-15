@@ -51,6 +51,13 @@ impl Vector {
             y: self.second.y - self.first.y,
         }
     }
+
+    pub fn reversed(&self) -> Vector {
+        Vector {
+            first: self.second.clone(),
+            second: self.first.clone(),
+        }
+    }
 }
 
 impl StandardVector {
